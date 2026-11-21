@@ -47,6 +47,22 @@
       font-weight: 700;
       cursor: pointer;
     }
+    #shift-lock-hint {
+      display: none;
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 15;
+      padding: 10px 18px;
+      border-radius: 999px;
+      color: #111;
+      background: #ffd600ee;
+      font: 700 14px/1 system-ui, sans-serif;
+      cursor: pointer;
+      box-shadow: 0 6px 24px #0008;
+      transform: translateX(-50%);
+    }
+    #shift-lock-hint.visible { display: block; }
   </style>
 </head>
 <body>
@@ -102,6 +118,73 @@
       var errorBox = document.querySelector("#loading-error");
       var errorDetail = document.querySelector("#loading-error-detail");
 
+      // Shift lock: Unity hides the canvas cursor ("cursor: none") while a
+      // match is running and restores it in menus, so that style is the
+      // in-game signal. Browsers only grant pointer lock from a user gesture,
+      // so capture the mouse as soon as gameplay asks for it and offer one
+      // click whenever a request is refused.
+      var shiftLock = (function () {
+        if (!canvas || typeof canvas.requestPointerLock !== "function") return;
+        if (typeof MutationObserver !== "function") return;
+        if (window.matchMedia && !window.matchMedia("(pointer: fine)").matches) return;
+
+        var wantsLock = false;
+        var hint = document.createElement("div");
+        hint.id = "shift-lock-hint";
+        hint.textContent = "Click to lock the mouse";
+        hint.addEventListener("pointerdown", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          lock();
+        });
+        document.body.appendChild(hint);
+
+        function locked() {
+          return document.pointerLockElement === canvas;
+        }
+
+        function showHint(show) {
+          hint.classList.toggle("visible", Boolean(show) && wantsLock && !locked());
+        }
+
+        function lock() {
+          if (!wantsLock || locked()) return;
+          try {
+            canvas.focus();
+            var request = canvas.requestPointerLock();
+            if (request && typeof request.then === "function") {
+              request.then(function () { showHint(false); }, function () { showHint(true); });
+            }
+          } catch (error) {
+            showHint(true);
+          }
+        }
+
+        function sync() {
+          var next = canvas.style.cursor === "none";
+          if (next === wantsLock) return;
+          wantsLock = next;
+          if (!wantsLock) {
+            showHint(false);
+            if (locked() && typeof document.exitPointerLock === "function") document.exitPointerLock();
+            return;
+          }
+          lock();
+          showHint(!locked());
+        }
+
+        new MutationObserver(sync).observe(canvas, { attributes: true, attributeFilter: ["style"] });
+        ["pointerdown", "mousedown", "touchstart", "keydown"].forEach(function (type) {
+          window.addEventListener(type, function () {
+            if (wantsLock && !locked()) lock();
+          }, true);
+        });
+        document.addEventListener("pointerlockchange", function () { showHint(!locked()); });
+        document.addEventListener("pointerlockerror", function () { showHint(true); });
+        window.addEventListener("blur", function () { showHint(true); });
+        return sync;
+      })();
+
       function setProgress(progress) {
         var percent = Math.min(100, Math.max(1, Math.round(progress * 100)));
         loadingBar.style.width = percent + "%";
@@ -150,6 +233,7 @@
           setTimeout(function () {
             loadingContainer.remove();
             canvas.focus();
+            if (typeof shiftLock === "function") shiftLock();
           }, 200);
         }).catch(function (error) {
           fail("Unity failed to start.", error && (error.stack || error.message || String(error)));

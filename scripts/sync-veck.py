@@ -4,9 +4,9 @@
 The script reads the live https://veck.io/ page, resolves the current build
 file names and product version, downloads the exact official bytes (requesting
 identity encoding so the server does not transparently Brotli-compress them),
-and renders site/index.html from templates/index.html.
+and renders Rivals/index.html from templates/index.html.
 
-Nothing is written to site/ unless every download and verification succeeds.
+Nothing is written to Rivals/ unless every download and verification succeeds.
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from pathlib import Path
 from urllib.parse import urljoin
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = ROOT / "site"
+SITE = ROOT / "Rivals"
 TEMPLATE = ROOT / "templates" / "index.html"
 MANIFEST_NAME = "build-manifest.json"
 OFFICIAL_ROOT = "https://veck.io/"
