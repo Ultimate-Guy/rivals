@@ -35,8 +35,10 @@ For each run the script:
    `Build/` or `StreamingAssets/` payloads behind.
 
 `.github/workflows/sync-veck.yml` runs the sync hourly, on manual dispatch, and
-when the sync script or template changes. It commits a new build and, for
-public repositories, publishes `Rivals/` to GitHub Pages.
+when the sync script or template changes. It commits a new build and, for public
+repositories with GitHub Pages enabled (Source: GitHub Actions), publishes
+`Rivals/` to GitHub Pages. Without a Pages site the optional mirror step is
+skipped so the sync still succeeds.
 
 The ad SDK is replaced by a small no-ad compatibility shim in
 `templates/index.html`; the game build itself is unchanged.
