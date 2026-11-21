@@ -1,0 +1,74 @@
+name: Sync official Veck.io build
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/sync-veck.py"
+      - "templates/index.html"
+      - ".github/workflows/sync-veck.yml"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: veck-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Validate the sync script
+        run: python3 -m py_compile scripts/sync-veck.py
+
+      - name: Download and verify the official Veck.io build
+        id: sync
+        run: python3 scripts/sync-veck.py --github-output "$GITHUB_OUTPUT"
+
+      - name: Commit the synced build
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site
+          if git diff --cached --quiet; then
+            echo "No staged changes."
+            exit 0
+          fi
+          git commit -m "Sync official Veck.io build ${{ steps.sync.outputs.version }}"
+          git push origin HEAD:main
+
+      - name: Report verified build
+        run: |
+          echo "Official build: ${{ steps.sync.outputs.version }}"
+          echo "Streaming assets: ${{ steps.sync.outputs.streamingAssets }}"
+          echo "Changed: ${{ steps.sync.outputs.changed }}"
+
+      # GitHub Pages can only publish from this private repository when the
+      # account has Pages access for private sources. Cosmic serves the game
+      # through its Worker proxy, so Pages stays an optional public mirror.
+      - name: Configure Pages
+        if: github.event.repository.private == false
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        if: github.event.repository.private == false
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        if: github.event.repository.private == false
+        id: deployment
+        uses: actions/deploy-pages@v4
