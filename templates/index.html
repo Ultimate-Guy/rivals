@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#292c2f">
+  <title>Veck.io</title>
+  <link rel="preload" href="logo-v2.webp" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="main.css">
+  <style>
+    html, body { background: #292c2f; overflow: hidden; }
+    #unity-container { z-index: 1; }
+    #unity-loading-container { z-index: 10; }
+    #loading-error {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      padding: 24px;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      color: #fff;
+      background: #1d2023;
+      font: 16px/1.5 system-ui, sans-serif;
+      text-align: center;
+    }
+    #loading-error.visible { display: flex; }
+    #loading-error code {
+      max-width: 800px;
+      padding: 12px;
+      overflow-wrap: anywhere;
+      border-radius: 8px;
+      color: #ffb4b4;
+      background: #00000055;
+      font-size: 13px;
+    }
+    #loading-error button {
+      padding: 10px 20px;
+      border: 0;
+      border-radius: 8px;
+      color: #111;
+      background: #ffd600;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+  </div>
+
+  <div id="unity-loading-container">
+    <div id="loading-percentage">1%</div>
+    <img src="logo-v2.webp" class="logo" alt="Veck.io" decoding="async" fetchpriority="high">
+    <div id="unity-loading-bar"><div id="unity-loading-bar-inner"></div></div>
+  </div>
+
+  <div id="loading-error" role="alert">
+    <strong>Veck.io could not start.</strong>
+    <div>The game files did not finish loading. Check your connection and try again.</div>
+    <code id="loading-error-detail"></code>
+    <button type="button" onclick="location.reload()">Retry</button>
+  </div>
+
+  <noscript>This game requires JavaScript and WebGL.</noscript>
+
+  <script>
+    // The official page uses its SDK for ads only. This mirror keeps the same
+    // gameplay-facing API but resolves ad callbacks immediately, with no ad
+    // network requests or overlays.
+    window.ENABLE_ADS = false;
+    window.SDK = {
+      _isInitialized: true,
+      _pendingBannerQueue: [],
+      gameplayStart() {},
+      gameplayEnd() {},
+      loadingStart() {},
+      loadingEnd() {},
+      SetBanner() {},
+      _adFinished(result) {
+        if (window.unityInstance && window.unityInstance.SendMessage) {
+          window.unityInstance.SendMessage("SDKManager", "OnVideoAdEnded", result ? "true" : "false");
+        }
+      },
+      showMidroll() { this._adFinished(true); },
+      showRewarded() { this._adFinished(true); }
+    };
+
+    (function () {
+      var buildUrl = new URL("Build", document.baseURI).href.replace(/\/$/, "");
+      var streamingAssetsUrl = new URL("StreamingAssets", document.baseURI).href.replace(/\/$/, "");
+      var loaderUrl = buildUrl + "/__LOADER_FILE__";
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingContainer = document.querySelector("#unity-loading-container");
+      var loadingBar = document.querySelector("#unity-loading-bar-inner");
+      var loadingPercentage = document.querySelector("#loading-percentage");
+      var errorBox = document.querySelector("#loading-error");
+      var errorDetail = document.querySelector("#loading-error-detail");
+
+      function setProgress(progress) {
+        var percent = Math.min(100, Math.max(1, Math.round(progress * 100)));
+        loadingBar.style.width = percent + "%";
+        loadingPercentage.textContent = percent + "%";
+      }
+
+      function fail(message, detail) {
+        console.error(message, detail || "");
+        loadingContainer.style.display = "none";
+        errorBox.classList.add("visible");
+        errorDetail.textContent = [message, detail].filter(Boolean).join("\n");
+      }
+
+      if (!window.WebGLRenderingContext) {
+        fail("WebGL is not available in this browser.");
+        return;
+      }
+
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      var resolutionScale = isMobile ? 1.3 : 1.0;
+      var storedScale = parseFloat(localStorage.getItem("ResolutionScale"));
+      if (!isNaN(storedScale)) resolutionScale = storedScale;
+
+      var config = {
+        dataUrl: buildUrl + "/__DATA_FILE__",
+        frameworkUrl: buildUrl + "/__FRAMEWORK_FILE__",
+        codeUrl: buildUrl + "/__CODE_FILE__",
+        streamingAssetsUrl: streamingAssetsUrl,
+        companyName: "LEGiON Platforms",
+        productName: "Veck.io",
+        productVersion: "__PRODUCT_VERSION__",
+        autoSyncPersistentDataPath: true,
+        devicePixelRatio: resolutionScale
+      };
+
+      var loader = document.createElement("script");
+      loader.src = loaderUrl;
+      loader.onload = function () {
+        window.SDK.loadingStart();
+        createUnityInstance(canvas, config, function (progress) {
+          setProgress(progress);
+        }).then(function (unityInstance) {
+          window.unityInstance = unityInstance;
+          window.SDK.loadingEnd();
+          setProgress(1);
+          setTimeout(function () {
+            loadingContainer.remove();
+            canvas.focus();
+          }, 200);
+        }).catch(function (error) {
+          fail("Unity failed to start.", error && (error.stack || error.message || String(error)));
+        });
+      };
+      loader.onerror = function () {
+        fail("The Unity loader could not be downloaded.", loaderUrl);
+      };
+      document.body.appendChild(loader);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "productVersion": "0.0.2482",
+  "streamingAssetsVersion": "aa0.0.2482",
+  "source": "https://veck.io/",
+  "files": {
+    "Build/27c8e281cd1c44ea329198df58829657.wasm": {
+      "sha256": "ed123c369aedd1564f8736ebc52dc29079b1bf24788ad18ad3f02497c369b8bb",
+      "size": 26357124,
+      "source": "https://veck.io/Build/27c8e281cd1c44ea329198df58829657.wasm.br"
+    },
+    "Build/a813a63f343de92a67ba91660691efb7.framework.js": {
+      "sha256": "6908ed74a746f5d0ac96d18c1cad744045ccb37eb724f770fdc7353e481b5664",
+      "size": 459243,
+      "source": "https://veck.io/Build/a813a63f343de92a67ba91660691efb7.framework.js.br"
+    },
+    "Build/b50c16868b108a7cb71d1125f7db04f4.loader.js": {
+      "sha256": "88480d6d880a38d8fcf2b27e1d9fa5f9d27857600ccfb71400ad8ef12c169cef",
+      "size": 26982,
+      "source": "https://veck.io/Build/b50c16868b108a7cb71d1125f7db04f4.loader.js"
+    },
+    "Build/ce3c479a1f014daba5313ddedba65494.data": {
+      "sha256": "40760a0a9b10b6d67ebc411d0b3518e87ce8043790c95aeeb640d44ee86c3614",
+      "size": 12529859,
+      "source": "https://veck.io/Build/ce3c479a1f014daba5313ddedba65494.data.br"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_adventure_33b0bfd06e55f6690ef0bdbe4e67c69d.bundle": {
+      "sha256": "7942e0ca072c6f95e32de7155fbbd2d68fb42e5bc109edf94ae2b45c57698e6a",
+      "size": 1344,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_adventure_33b0bfd06e55f6690ef0bdbe4e67c69d.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_gem_bcf294b87841540d50b71a99e1c28236.bundle": {
+      "sha256": "fbb496427edb77cd726e74a6cbd63e41737433f09d3bc63bcf79e061a71ec8fc",
+      "size": 8196,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_gem_bcf294b87841540d50b71a99e1c28236.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_leaderboardpanel_bf912a9edb9b1a8e5855727ce4b56aa0.bundle": {
+      "sha256": "fd42f668b2ad24f2163d6d8c67a2a0c5e4afce1e8d3aa21360f62c11ac81189f",
+      "size": 193961,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_leaderboardpanel_bf912a9edb9b1a8e5855727ce4b56aa0.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_matchmakepanel_b4cd876f0da7fc2eb5a0bd7f03456775.bundle": {
+      "sha256": "09d3f35c25e4f406c8d1bf99a00731952bcd9991917fdd73f2e2bcc6c5222af2",
+      "size": 209004,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_matchmakepanel_b4cd876f0da7fc2eb5a0bd7f03456775.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_missions_4f53a2508f36fa1f66c712e9b15e7919.bundle": {
+      "sha256": "b222ed9863c5bc9c58b5b69607ff55dfbd7883fb5f11088de7af13140758a99b",
+      "size": 3777,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_missions_4f53a2508f36fa1f66c712e9b15e7919.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_nvtefrendspanel_7b183605a15deb233d8fb09b541ca88e.bundle": {
+      "sha256": "86638fb307110997336f7a9db3ec2f23d64afa1e80b97a68d2ad50d507274f67",
+      "size": 154715,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_nvtefrendspanel_7b183605a15deb233d8fb09b541ca88e.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/WebGL/local_assets_playwthfrendspanel_c7771adb2c17426bf7f514ae97223c31.bundle": {
+      "sha256": "9ecda331f48b5c8f6b3063ef588c90bc97955cd3761a0a7bae9a902563b972c4",
+      "size": 183499,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/WebGL/local_assets_playwthfrendspanel_c7771adb2c17426bf7f514ae97223c31.bundle"
+    },
+    "StreamingAssets/aa0.0.2482/catalog.bin": {
+      "sha256": "468ef4b38d9a44a01047701b947b96ab717e97a808678ea259df4c7a8e9efd2e",
+      "size": 975779,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/catalog.bin"
+    },
+    "StreamingAssets/aa0.0.2482/catalog.hash": {
+      "sha256": "46262dcfb854e861728acae08fb889e3c9d91c18eb653da9433159d8ca69440b",
+      "size": 32,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/catalog.hash"
+    },
+    "StreamingAssets/aa0.0.2482/settings.json": {
+      "sha256": "88263ffd2b3e548dce315598f0c120fcecbbab710cdca8a86a2bb6c1cbf00022",
+      "size": 850,
+      "source": "https://veck.io/StreamingAssets/aa0.0.2482/settings.json"
+    },
+    "bg-v2.webp": {
+      "sha256": "39a13753e7e2e825b64504236c60af4a12f900a0c579f2e9212ddf7a65b6d37f",
+      "size": 140232,
+      "source": "https://veck.io/bg-v2.webp"
+    },
+    "logo-v2.webp": {
+      "sha256": "1f13f89decd7955db1808b3f3a89baa2b804f116b21b4ab11271d2682b0b0362",
+      "size": 65542,
+      "source": "https://veck.io/logo-v2.webp"
+    },
+    "main.css": {
+      "sha256": "42a8bcf3393edcfed9a1dae7257340eae96cd22b0d601b4c49781c1f9bdedc92",
+      "size": 2748,
+      "source": "https://veck.io/main.css"
+    }
+  }
+}
