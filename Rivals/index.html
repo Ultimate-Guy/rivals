@@ -220,29 +220,36 @@
         devicePixelRatio: resolutionScale
       };
 
-      var loader = document.createElement("script");
-      loader.src = loaderUrl;
-      loader.onload = function () {
-        window.SDK.loadingStart();
-        createUnityInstance(canvas, config, function (progress) {
-          setProgress(progress);
-        }).then(function (unityInstance) {
-          window.unityInstance = unityInstance;
-          window.SDK.loadingEnd();
-          setProgress(1);
-          setTimeout(function () {
-            loadingContainer.remove();
-            canvas.focus();
-            if (typeof shiftLock === "function") shiftLock();
-          }, 200);
-        }).catch(function (error) {
-          fail("Unity failed to start.", error && (error.stack || error.message || String(error)));
-        });
+      // Audio watchdog: resume suspended Web Audio contexts after tab
+      // switches or OS interruptions (Unity's built-in loop only runs once).
+      var watchdog = document.createElement("script");
+      watchdog.src = "nx-audio-watchdog.js";
+      watchdog.onload = function () {
+        var loader = document.createElement("script");
+        loader.src = loaderUrl;
+        loader.onload = function () {
+          window.SDK.loadingStart();
+          createUnityInstance(canvas, config, function (progress) {
+            setProgress(progress);
+          }).then(function (unityInstance) {
+            window.unityInstance = unityInstance;
+            window.SDK.loadingEnd();
+            setProgress(1);
+            setTimeout(function () {
+              loadingContainer.remove();
+              canvas.focus();
+              if (typeof shiftLock === "function") shiftLock();
+            }, 200);
+          }).catch(function (error) {
+            fail("Unity failed to start.", error && (error.stack || error.message || String(error)));
+          });
+        };
+        loader.onerror = function () {
+          fail("The Unity loader could not be downloaded.", loaderUrl);
+        };
+        document.body.appendChild(loader);
       };
-      loader.onerror = function () {
-        fail("The Unity loader could not be downloaded.", loaderUrl);
-      };
-      document.body.appendChild(loader);
+      document.body.appendChild(watchdog);
     })();
   </script>
 </body>
