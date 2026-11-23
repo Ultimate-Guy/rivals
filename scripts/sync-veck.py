@@ -28,7 +28,7 @@ TEMPLATE = ROOT / "templates" / "index.html"
 MANIFEST_NAME = "build-manifest.json"
 OFFICIAL_ROOT = "https://veck.io/"
 MAX_FILE_BYTES = 256 * 1024 * 1024
-COSMETIC_FILES = ("logo-v2.webp", "bg-v2.webp", "main.css")
+COSMETIC_FILES = ("logo-v2.webp", "bg-v2.webp", "main.css", "nx-audio-watchdog.js")
 BUNDLE_PATTERN = re.compile(rb"local_[A-Za-z0-9_]+_[a-f0-9]{32}\.bundle")
 
 
