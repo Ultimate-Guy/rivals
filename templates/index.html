@@ -224,7 +224,16 @@
       // switches or OS interruptions (Unity's built-in loop only runs once).
       var watchdog = document.createElement("script");
       watchdog.src = "nx-audio-watchdog.js";
-      watchdog.onload = function () {
+      watchdog.onerror = function () {
+        // The watchdog is optional; proceed without it so a missing watchdog
+        // file never blocks game startup.
+        console.warn("nx-audio-watchdog.js failed to load; continuing without it.");
+        loadUnityLoader();
+      };
+      var loaderStarted = false;
+      function loadUnityLoader() {
+        if (loaderStarted) return;
+        loaderStarted = true;
         var loader = document.createElement("script");
         loader.src = loaderUrl;
         loader.onload = function () {
@@ -248,7 +257,8 @@
           fail("The Unity loader could not be downloaded.", loaderUrl);
         };
         document.body.appendChild(loader);
-      };
+      }
+      watchdog.onload = loadUnityLoader;
       document.body.appendChild(watchdog);
     })();
   </script>
